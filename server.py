@@ -12,13 +12,11 @@ from whoosh.query import *
 from whoosh.qparser import QueryParser
 from whoosh.index import open_dir
 import json
-import jinja2_highlight
+import os
 
 
 class MyFlask(Flask):
-    jinja_options = dict(Flask.jinja_options)
-    jinja_options.setdefault('extensions',
-        []).append('jinja2_highlight.HighlightExtension')
+    pass
 
 schema = Schema(dump_name=TEXT(stored=True),
     title=TEXT(stored=True),
@@ -26,6 +24,8 @@ schema = Schema(dump_name=TEXT(stored=True),
     mime=KEYWORD(lowercase=True),
     id=ID(stored=True))
 
+if not os.path.exists("indexdir"):
+    os.mkdir("indexdir")
 search_index = open_dir("indexdir")
 
 app = MyFlask(__name__)
