@@ -1,0 +1,8 @@
+*.py[cod]
+.Python
+data/
+bin/
+include/
+indexdir/
+file_storage/
+lib/

@@ -13,6 +13,7 @@ from whoosh.qparser import QueryParser
 from whoosh.index import open_dir
 import json
 import os
+import config
 
 
 class MyFlask(Flask):
@@ -24,9 +25,9 @@ schema = Schema(dump_name=TEXT(stored=True),
     mime=KEYWORD(lowercase=True),
     id=ID(stored=True))
 
-if not os.path.exists("indexdir"):
-    os.mkdir("indexdir")
-search_index = open_dir("indexdir")
+if not os.path.exists(config.whoosh_indexdir):
+    os.mkdir(config.whoosh_indexdir)
+search_index = open_dir(config.whoosh_indexdir)
 
 app = MyFlask(__name__)
 Markdown(app)

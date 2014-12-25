@@ -274,6 +274,7 @@
 
     .overlay {
         position: fixed;
+        top: 0;
         width: 100%;
         height: 100%;
         z-index: 9999;
@@ -284,7 +285,6 @@
         margin: 60px auto 0;
         border-radius: 4px;
         z-index: 10000;
-        max-height: 700px;
         padding: 30px 10px 10px;
         width: 700px;
         background-color: #fff;
@@ -299,6 +299,7 @@
         border-bottom: 1px solid #999;
         border-top: none;
         width: 694px;
+        height: 300px;
         font-family: monospace;
     }
 
@@ -346,7 +347,7 @@
     <div id="title">» oom</div>
     <div id="search">
     <form action="/search">
-        <input type="text" name="q" autofocus placeholder="search...">
+        <input id="search_box" type="text" name="q" autofocus placeholder="search...">
     </form>
     </div>
 </div>
@@ -379,28 +380,6 @@
     </div>
 </div>
 
-<div class="overlay hidden">
-    <div class="modal">
-      <div class="entry-title">
-        <div class="fade-out">
-            <span class="collaps-bar">
-                <input id="edit_entry_title" type="text" placeholder="titel/description" value="">
-            </span>
-            <span class="action-bar">
-                <span class="desc"> </span>
-                <i data-desc="save" class="action-save fa fa-floppy-o hover-blue"></i>
-                <i data-desc="close" class="action-close fa fa-close hover-red"></i>
-            </span>
-            <div class="clear"> </div>
-        </div>
-      </div>
-      <textarea id="edit_entry_content" placeholder="content"></textarea>
-      <input id="edit_entry_mime" type="text" placeholder="mime/type">
-      <input id="edit_entry_id" type="hidden" value="">
-      <input id="edit_entry_dump_name" type="hidden" value="">
-    </div>
-</div>
-
 
 <script src="{{ url_for('static', filename='jquery-2.1.3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='prism.js') }}"></script>
@@ -409,88 +388,6 @@
 error = function(msg) {
     alert(msg);
 }
-
-$(".action-bar i").hover(function() {
-    $(this).parent().children("span").text($(this).attr("data-desc"));
-}, function() {
-    $(this).parent().children("span").text("");
-});
-
-editEntry = function(entry_id, _dump_name) {
-    $(".overlay").fadeIn(50);
-    console.log(entry_id);
-    $.post("{{ url_for('api_json') }}",  
-      JSON.stringify({ 
-        action: "get_entry", 
-        _id: entry_id,
-        dump_name: _dump_name}))
-    .done(function(data) {
-      $("#edit_entry_content").val(data.content);
-      $("#edit_entry_title").focus();
-      $("#edit_entry_mime").val(data.mime);
-      $("#edit_entry_id").val(entry_id);
-      $("#edit_entry_title").val(data.title);
-    }).error(function(data) {
-      error(data.responseJSON.reason);
-    });
-}
-
-addEntry = function(dump_name) {
-    $(".overlay").fadeIn(50);
-    $("#edit_entry_content").val("");
-    $("#edit_entry_content").focus();
-    $("#edit_entry_mime").val("text/plain");
-    $("#edit_entry_title").val("");
-    $("#edit_entry_dump_name").val(dump_name);
-}
-
-$("#menu .action-add").click(function(e) {
-    addEntry($(this).attr("data-dump-name"))
-    return false;
-});
-
-$(".overlay").click(function(e) {
-    if(e.target == this)
-        $(this).fadeOut(50);
-});
-
-$(".overlay .action-close").click(function(e) {
-    $(this).parent().parent().parent().parent().parent().fadeOut(50);
-});
-
-$(".overlay .action-save").click(function(e) {
-    if($("#edit_entry_id").val()) {
-        $.post("{{ url_for('api_json') }}",  
-          JSON.stringify({ 
-                action: "edit_entry", 
-                _id:  $("#edit_entry_id").val(), 
-                dump_name:  dump_name, 
-                content: $("#edit_entry_content").val(),
-                mime: $("#edit_entry_mime").val(),
-                title: $("#edit_entry_title").val()}))
-        .done(function(data) {
-          console.log("edited: "+data);
-          location.reload();
-        }).error(function(data) {
-          error(data.responseJSON.reason);
-        });
-    } else {
-        $.post("{{ url_for('api_json') }}",  
-          JSON.stringify({ 
-                action: "add_entry",
-                dump_name:  dump_name, 
-                content: $("#edit_entry_content").val(),
-                mime: $("#edit_entry_mime").val(),
-                title: $("#edit_entry_title").val()}))
-        .done(function(data) {
-          console.log("added: "+data);
-          location.reload();
-        }).error(function(data) {
-          error(data.responseJSON.reason);
-        });
-    }
-});
-
 
 </script>
 <div>

@@ -14,12 +14,131 @@
     {% else %}
       <p>no entries</p>
     {% endif %}
+
 {% endblock %}
 
 {% block bottom_script %}
+<div id="entry_edit_form" class="overlay hidden">
+    <div class="modal">
+      <div class="entry-title">
+        <div class="fade-out">
+            <span class="collaps-bar">
+                <input id="edit_entry_title" type="text" placeholder="titel/description" value="">
+            </span>
+            <span class="action-bar">
+                <span class="desc"> </span>
+                <i data-desc="save" class="action-save fa fa-floppy-o hover-blue"></i>
+                <i data-desc="close" class="action-close fa fa-close hover-red"></i>
+            </span>
+            <div class="clear"> </div>
+        </div>
+      </div>
+      <textarea id="edit_entry_content" placeholder="content"></textarea>
+      <input id="edit_entry_mime" type="text" placeholder="mime/type">
+      <input id="edit_entry_id" type="hidden" value="">
+      <input id="edit_entry_dump_name" type="hidden" value="">
+    </div>
+</div>
+
 <script>
 
 var dump_name = "{{ dump_name }}";
+
+$(".action-bar i").hover(function() {
+    $(this).parent().children("span").text($(this).attr("data-desc"));
+}, function() {
+    $(this).parent().children("span").text("");
+});
+
+editEntry = function(entry_id, _dump_name) {
+    $(".overlay").fadeIn(50);
+    console.log(entry_id);
+    $.post("{{ url_for('api_json') }}",  
+      JSON.stringify({ 
+        action: "get_entry", 
+        _id: entry_id,
+        dump_name: _dump_name}))
+    .done(function(data) {
+      $("#edit_entry_content").val(data.content);
+      $("#edit_entry_title").focus();
+      $("#edit_entry_mime").val(data.mime);
+      $("#edit_entry_id").val(entry_id);
+      $("#edit_entry_title").val(data.title);
+    }).error(function(data) {
+      error(data.responseJSON.reason);
+    });
+}
+
+addEntry = function(dump_name) {
+    $(".overlay").fadeIn(50);
+    $("#edit_entry_content").val("");
+    $("#edit_entry_content").focus();
+    $("#edit_entry_mime").val("text/plain");
+    $("#edit_entry_title").val("");
+    $("#edit_entry_dump_name").val(dump_name);
+}
+
+$("#menu .action-add").click(function(e) {
+    addEntry($(this).attr("data-dump-name"))
+    return false;
+});
+
+$(".overlay").click(function(e) {
+    if(e.target == this)
+        $(this).fadeOut(50);
+});
+
+$(".overlay .action-close").click(function(e) {
+    $(this).parent().parent().parent().parent().parent().fadeOut(50);
+});
+
+
+action_save = function() {
+    if($("#edit_entry_id").val()) {
+        $.post("{{ url_for('api_json') }}",  
+            JSON.stringify({ 
+                action: "edit_entry", 
+                _id:  $("#edit_entry_id").val(), 
+                dump_name:  dump_name, 
+                content: $("#edit_entry_content").val(),
+                mime: $("#edit_entry_mime").val(),
+                title: $("#edit_entry_title").val()}))
+        .done(function(data) {
+            console.log("edited: "+data);
+            location.reload();
+        }).error(function(data) {
+            error(data.responseJSON.reason);
+        });
+    } else {
+        $.post("{{ url_for('api_json') }}",  
+            JSON.stringify({ 
+                action: "add_entry",
+                dump_name:  dump_name, 
+                content: $("#edit_entry_content").val(),
+                mime: $("#edit_entry_mime").val(),
+                title: $("#edit_entry_title").val()}))
+        .done(function(data) {
+            console.log("added: "+data);
+            location.reload();
+        }).error(function(data) {
+            error(data.responseJSON.reason);
+        });
+    }
+}
+
+$(".overlay .action-save").click(function(e) {
+    action_save();
+});
+
+$("#entry_edit_form").keydown(function(e) {
+  if(e.keyCode == 13 && (e.metaKey || e.ctrlKey || e.shiftKey)) {
+    action_save();
+    return false;
+  } else if(e.keyCode == 27) {
+    $(".overlay").fadeOut(50);
+    $("#search_box").focus();
+  }
+});
 
 $(".entry .collaps-bar").each(function() {
   $(this).click(function() {
@@ -64,11 +183,6 @@ $(".entry .action-edit").each(function() {
   });
 });
 
-
-
-$(".action-button").each(function() {
-  
-});
 
 </script>
 {% endblock %}

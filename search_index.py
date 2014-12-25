@@ -7,6 +7,7 @@ from whoosh.query import *
 from whoosh.qparser import QueryParser
 import progressbar
 import os
+import config
 
 schema = Schema(dump_name=TEXT(stored=True),
 	title=TEXT(stored=True),
@@ -15,9 +16,9 @@ schema = Schema(dump_name=TEXT(stored=True),
     id=ID(stored=True))
 
 index = None
-if not os.path.exists("indexdir"):
-    os.mkdir("indexdir")
-index = create_in("indexdir", schema)
+if not os.path.exists(config.whoosh_indexdir):
+    os.mkdir(config.whoosh_indexdir)
+index = create_in(config.whoosh_indexdir, schema)
 
 storage = Storage()
 db = storage.db

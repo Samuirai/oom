@@ -3,13 +3,14 @@ import pymongo
 from bson.objectid import ObjectId
 import random
 import base64
+import config
 from storage import StorageInterface
 
 
 class MongoDBStorage(StorageInterface):
     def __init__(self):
         self.client = pymongo.MongoClient()
-        self.db = self.client['oom']
+        self.db = self.client[config.mongodb_client]
 
     def read_dump(self, dump_name):
         dump = self.db[dump_name].find()
