@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Hosts{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <h1>Dumps</h1>
+    {% if dumps %}
+        {% for dump in dumps %}
+          <div>
+            <a href="{{ url_for('get_dump', dump_name=dump.dump_name) }}">{{ dump.filename }}</a>
+            <a href="{{ url_for('remove_dump', dump_name=dump.dump_name) }}">X</a>
+          </div>
+        {% endfor %}
+    {% else %}
+      <p>no dumps.</p>
+    {% endif %}
+{% endblock %}
+
+{% block bottom_script %}
+
+{% endblock %}

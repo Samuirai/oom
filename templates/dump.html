@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Hosts{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {% if dump %}
+        {% for entry in dump %}
+            {% include 'entry.html' %}
+        {% endfor %}
+    {% else %}
+      <p>no entries</p>
+    {% endif %}
+{% endblock %}
+
+{% block bottom_script %}
+<script>
+
+var dump_name = "{{ dump_name }}";
+
+$(".entry .collaps-bar").each(function() {
+  $(this).click(function() {
+    var collaps = $(this).find(".collaps");
+    if(collaps.hasClass("fa-caret-right")) {
+      collaps.removeClass("fa-caret-right");
+      collaps.addClass("fa-caret-down");
+    } else {
+      collaps.removeClass("fa-caret-down");
+      collaps.addClass("fa-caret-right");
+    }
+    
+    $(this).parent().parent().parent().children(".entry-content").toggle()
+  });
+});
+
+$(".entry .action-remove").each(function() {
+  $(this).click(function() {
+    var entry = $(this).parent().parent().parent().parent();
+    var meta = entry.children(".meta");
+    console.log(meta)
+    $.post("{{ url_for('api_json') }}",  
+      JSON.stringify({ action: "remove_entry", _id:  meta.attr("data-id"), dump_name:  dump_name}))
+    .done(function(data) {
+      console.log("removed: "+data);
+      entry.fadeOut();
+    }).error(function(data) {
+      console.log(data.responseJSON.reason);
+    });
+  });
+});
+
+$(".entry .action-edit").each(function() {
+  $(this).click(function() {
+    var entry = $(this).parent().parent().parent().parent();
+    var meta = entry.children(".meta");
+    console.log(meta)
+    if(dump_name=="")
+      editEntry(meta.attr("data-id"), meta.attr("data-dump-name"));
+    else
+      editEntry(meta.attr("data-id"), dump_name);
+  });
+});
+
+
+
+$(".action-button").each(function() {
+  
+});
+
+</script>
+{% endblock %}

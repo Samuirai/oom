@@ -1,0 +1,10 @@
+Flask==0.10.1
+Flask-Markdown==0.3
+Jinja2==2.7.3
+Markdown==2.5.2
+MarkupSafe==0.23
+Werkzeug==0.9.6
+Whoosh==2.6.0
+progressbar==2.2
+pymongo==2.7.2
+python-magic==0.4.6

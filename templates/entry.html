@@ -1,0 +1,57 @@
+<div class="entry" >
+
+    <div class="meta" data-id="{{ entry._id }}"
+        data-dump-name="{{ entry.dump_name }}"> </div>
+    <div class="entry-title">
+        <div class="fade-out">
+            <span class="collaps-bar">
+            <i class="fa fa-caret-down collaps"></i>
+            {{ entry.title }} ({{ entry.mime }})
+            </span>
+            <span class="action-bar">
+                <span class="desc"> </span>
+                <i data-desc="copy to clipboard" class="action-copy fa fa-files-o hover-yellow"></i>
+                <i data-desc="edit" class="action-edit fa fa-pencil-square-o hover-blue"></i>
+                <i data-desc="remove" class="action-remove fa fa-trash hover-red"></i>
+            </span>
+            <div class="clear"> </div>
+        </div>
+    </div>
+    <div class="entry-content">
+      {% if entry.mime.split("/")[0] == "image" %}
+          <img class="pure-img" src="data:{{entry.mime}};base64,{{entry.content}}"/>
+      {% elif entry.mime.split("/")[0] == "text" %}
+          
+          {% if entry.mime.split("/")[1] == "x-python" %}
+              <pre class="line-numbers" ><code data-start="0" class="language-python">{{ entry.content }}</code></pre>
+          {% elif entry.mime.split("/")[1] == "x-c" %}
+              <pre class="line-numbers" ><code data-start="0" class="language-c">{{ entry.content }}</code></pre>
+          {% elif entry.mime.split("/")[1] == "x-c++" %}
+              <pre class="line-numbers" ><code data-start="0" class="language-c">{{ entry.content }}</code></pre>
+          {% elif entry.mime.split("/")[1] == "html" %}
+              <pre class="line-numbers" ><code data-start="0" class="language-markup">{{ entry.content }}</code></pre>
+          {% elif entry.mime.split("/")[1] == "x-php" %}
+              <pre class="line-numbers" ><code data-start="0" class="language-php">{{ entry.content }}</code></pre>
+          {% elif entry.mime.split("/")[1] == "x-markdown" %}
+              {{ entry.content|markdown }}
+          {% else %}
+              <pre ><code data-start="0" class="language-markup">{{ entry.content }}</code></pre>
+          {% endif %}
+
+      {% elif entry.mime.split("/")[0] == "application" %}
+          <pre style="max-height: 100px; overflow: hidden;">{{ entry.content }}</pre>
+      {% elif entry.mime.split("/")[0] == "audio" %}
+          <audio controls>
+              <source src="data:{{entry.mime}};base64,{{ entry.content }}" type="{{ entry.mime }}">
+          </audio>
+      {% elif entry.mime.split("/")[0] == "video" %}
+          <video class="pure-img-responsive" controls>
+              <source src="data:{{entry.mime}};base64,{{ entry.content }}" type="{{ entry.mime }}">
+          </video>
+      {% else %}
+          {{ entry.content }}
+      {% endif %}
+    </div>
+    <div class="hidden" id="entry_content_{{ entry._id }}">{{ entry.content }}</div>
+    <div class="hidden" id="entry_mime_{{ entry._id }}">{{ entry.mime }}</div>
+</div>

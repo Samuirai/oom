@@ -1,0 +1,501 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome-4.2.0/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pure-release-0.5.0/pure-min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='prism.css') }}">
+    <style>
+
+    body, html {
+        font-size: 14px;
+        font-family: Helvetica, Arial;
+        margin: 0;
+        color: #404040;
+        padding: 0;
+    }
+
+    .pure-img-responsive {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /*
+    This is the parent `<div>` that contains the menu and the content area.
+    */
+    #layout {
+        position: relative;
+        padding-left: 0;
+    }
+        #layout.active {
+            position: relative;
+            left: 200px;
+        }
+            #layout.active #menu {
+                left: 200px;
+                width: 200px;
+            }
+
+            #layout.active .menu-link {
+                left: 200px;
+            }
+    /*
+    The content `<div>` is where all your content goes.
+    */
+    .content {
+        margin: 0 auto;
+        padding: 0 2em;
+        margin-bottom: 50px;
+        line-height: 1.6em;
+    }
+
+    /*
+    The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
+    appears on the left side of the page.
+    */
+
+    #menu {
+
+        margin-left: -200px; /* "#menu" width */
+        width: 200px;
+        position: fixed;
+        top: 45px;
+        left: 0;
+        bottom: 0;
+        z-index: 1000; /* so the menu or its navicon stays above all content */
+        background: #eee;
+        overflow-y: auto;
+        border-right: 1px solid #999;
+        -webkit-overflow-scrolling: touch;
+    }
+    /*
+    All anchors inside the menu should be styled like this.
+    */
+    #menu a {
+        transition-property: background;
+        transition-duration: 0.1s;
+        color: #404040;
+        border-bottom: 1px solid #999;
+        padding: 0.6em 0 0.6em 0.6em;
+    }
+
+     #menu .pure-menu,
+     #menu .pure-menu ul {
+        border: none;
+        background: transparent;
+    }
+
+    #menu .pure-menu li a:hover,
+    #menu .pure-menu li a:focus {
+        background: #ccc;
+    }
+
+    #menu .pure-menu-selected,
+    #menu .pure-menu-heading {
+        background: #ddd;
+    }
+
+    #menu .pure-menu-selected a {
+        color: #000;
+    }
+
+
+    #layout {
+        padding-left: 206px; /* left col width "#menu" */
+        left: 0;
+    }
+    #menu {
+        left: 200px;
+    }
+
+    .entry {
+        display: inline-block;
+        float: left;
+        position: relative;
+        padding: 25px 5px 0px 0px;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        -webkit-box-sizing:border-box;
+    }
+
+    #content {
+        position: relative;
+        padding: 25px 5px 0px 0px;
+
+    }
+
+    @media (min-width: 1500px) {
+        .entry {
+            width: 50%;
+        }
+    }
+
+    @media (max-width: 1500px) {
+        .entry {
+            width: 100%;
+        }
+    }
+
+    .collaps-bar {
+        cursor: pointer;
+    }
+
+    .action-bar {
+        cursor: pointer;
+    }
+
+    .entry-title {
+        background-color: #eee;
+        margin-top: -20px;
+        border: 1px solid #999;
+        line-height: 20px;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .action-bar .desc {
+        font-size: 12px;
+        color: #aaa;
+        padding: 0 10px;
+    }
+
+    .entry-title .collaps {
+        width: 10px;
+    }
+
+    .entry-title .action-bar {
+        display: inline;
+        float: right; 
+        text-align: right;
+        height: 20px;
+    }
+
+    .entry-title .action-bar i {
+        border-radius: 4px;
+        padding: 2px;
+        width: 14px;
+        height: 14px;
+    }
+
+    .entry:hover .entry-title .fade-out,
+    .entry:focus .entry-title .fade-out {
+        opacity: 1.0;
+    }
+
+
+
+    .entry .entry-title .fade-out {
+        opacity: 0.1;
+        transition-property: opacity;
+        transition-duration: 0.1s;
+
+    }
+
+    .entry-title span {
+        float: left;
+    }
+
+    .entry-content pre, 
+    .entry-title ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .entry-content {
+        border-bottom: 1px solid #999;
+        border-left: 1px solid #999;
+        border-right: 1px solid #999;
+        padding: 5px;
+    }
+
+    .entry-title ul li {
+        display: inline-block;
+        float: left;
+        height: 20px;
+    }
+
+    .menu-link {
+        position: fixed;
+        left: 200px;
+        display: none;
+    }
+
+    #layout.active .menu-link {
+        left: 200px;
+    }
+
+    #header {
+        position: fixed;
+        width: 100%;
+        z-index: 999;
+       background-color: #be0000;
+       padding-left: 20px;
+       height: 45px;
+       line-height: 45px;
+       color: #fff;
+       font-weight: bold;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    #main {
+        position: relative;
+        top: 20px;
+    }
+
+    #header #title {
+        float: left;
+    }
+
+    #header #search input{
+        left: 0;
+        top: 7px;
+        min-width: 220px;
+        width: 400px;
+        position: absolute;
+        line-height: 25px;
+        margin-left: 210px;
+    }
+
+    .hover-red:hover {
+        color: #c00;
+    }
+
+    .hover-blue:hover {
+        color: #00c;
+    }
+
+    .hover-yellow:hover {
+        color: #f80;
+    }
+
+    .overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .overlay .modal {
+        margin: 60px auto 0;
+        border-radius: 4px;
+        z-index: 10000;
+        max-height: 700px;
+        padding: 30px 10px 10px;
+        width: 700px;
+        background-color: #fff;
+    }
+
+    .overlay .modal textarea {
+        display: block;
+        min-height: 100px;
+        max-height: 500px;
+        border-right: 1px solid #999;
+        border-left: 1px solid #999;
+        border-bottom: 1px solid #999;
+        border-top: none;
+        width: 694px;
+        font-family: monospace;
+    }
+
+    .overlay .modal .entry-title {
+        width: 688px;
+    }
+
+    .overlay .modal #edit_entry_mime {
+        width: 696px;
+        font-family: monospace;
+        border-top: none;
+        border-right: 1px solid #999;
+        border-left: 1px solid #999;
+        border-bottom: 1px solid #999;
+    } 
+
+    .overlay .modal #edit_entry_title {
+        background-color: transparent;
+        width: 350px;
+        border: none;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #menu .action-bar {
+        position: absolute;
+        right: 0;
+        padding-right: 5px;
+        opacity: 0.1;
+    }
+
+    #menu .action-bar:hover {
+        background-color: #fff;
+        border-radius: 4px;
+        opacity: 1;
+    }
+
+    </style>
+</head>
+<body>
+
+<div id="header">
+    <div id="title">» oom</div>
+    <div id="search">
+    <form action="/search">
+        <input type="text" name="q" autofocus placeholder="search...">
+    </form>
+    </div>
+</div>
+
+<div class="clear"> </div>
+
+<div id="layout">
+    <div id="menu">
+        <div class="pure-menu pure-menu-open">
+            <ul>
+                {% for dump in dumps %}
+                    <li>
+                        <a href="{{ url_for('get_dump', dump_name=dump.dump_name) }}">
+                            {{dump.dump_name}}
+                            <span class="action-bar" style="float: right">
+                                <span class="desc"> </span>
+                                <i data-desc="new entry" data-dump-name="{{dump.dump_name}}" class="action-add fa fa-plus-square hover-blue"></i>
+                            </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<div class="overlay hidden">
+    <div class="modal">
+      <div class="entry-title">
+        <div class="fade-out">
+            <span class="collaps-bar">
+                <input id="edit_entry_title" type="text" placeholder="titel/description" value="">
+            </span>
+            <span class="action-bar">
+                <span class="desc"> </span>
+                <i data-desc="save" class="action-save fa fa-floppy-o hover-blue"></i>
+                <i data-desc="close" class="action-close fa fa-close hover-red"></i>
+            </span>
+            <div class="clear"> </div>
+        </div>
+      </div>
+      <textarea id="edit_entry_content" placeholder="content"></textarea>
+      <input id="edit_entry_mime" type="text" placeholder="mime/type">
+      <input id="edit_entry_id" type="hidden" value="">
+      <input id="edit_entry_dump_name" type="hidden" value="">
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='jquery-2.1.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='prism.js') }}"></script>
+<script>
+
+error = function(msg) {
+    alert(msg);
+}
+
+$(".action-bar i").hover(function() {
+    $(this).parent().children("span").text($(this).attr("data-desc"));
+}, function() {
+    $(this).parent().children("span").text("");
+});
+
+editEntry = function(entry_id, _dump_name) {
+    $(".overlay").fadeIn(50);
+    console.log(entry_id);
+    $.post("{{ url_for('api_json') }}",  
+      JSON.stringify({ 
+        action: "get_entry", 
+        _id: entry_id,
+        dump_name: _dump_name}))
+    .done(function(data) {
+      $("#edit_entry_content").val(data.content);
+      $("#edit_entry_title").focus();
+      $("#edit_entry_mime").val(data.mime);
+      $("#edit_entry_id").val(entry_id);
+      $("#edit_entry_title").val(data.title);
+    }).error(function(data) {
+      error(data.responseJSON.reason);
+    });
+}
+
+addEntry = function(dump_name) {
+    $(".overlay").fadeIn(50);
+    $("#edit_entry_content").val("");
+    $("#edit_entry_content").focus();
+    $("#edit_entry_mime").val("text/plain");
+    $("#edit_entry_title").val("");
+    $("#edit_entry_dump_name").val(dump_name);
+}
+
+$("#menu .action-add").click(function(e) {
+    addEntry($(this).attr("data-dump-name"))
+    return false;
+});
+
+$(".overlay").click(function(e) {
+    if(e.target == this)
+        $(this).fadeOut(50);
+});
+
+$(".overlay .action-close").click(function(e) {
+    $(this).parent().parent().parent().parent().parent().fadeOut(50);
+});
+
+$(".overlay .action-save").click(function(e) {
+    if($("#edit_entry_id").val()) {
+        $.post("{{ url_for('api_json') }}",  
+          JSON.stringify({ 
+                action: "edit_entry", 
+                _id:  $("#edit_entry_id").val(), 
+                dump_name:  dump_name, 
+                content: $("#edit_entry_content").val(),
+                mime: $("#edit_entry_mime").val(),
+                title: $("#edit_entry_title").val()}))
+        .done(function(data) {
+          console.log("edited: "+data);
+          location.reload();
+        }).error(function(data) {
+          error(data.responseJSON.reason);
+        });
+    } else {
+        $.post("{{ url_for('api_json') }}",  
+          JSON.stringify({ 
+                action: "add_entry",
+                dump_name:  dump_name, 
+                content: $("#edit_entry_content").val(),
+                mime: $("#edit_entry_mime").val(),
+                title: $("#edit_entry_title").val()}))
+        .done(function(data) {
+          console.log("added: "+data);
+          location.reload();
+        }).error(function(data) {
+          error(data.responseJSON.reason);
+        });
+    }
+});
+
+
+</script>
+<div>
+{% block bottom_script %}{% endblock %}
+</div>
+
+</body>
+</html>
